@@ -9,20 +9,23 @@ public class OliviaDirector : CharDirector {
     public float sprintAccel = 1f;
     public float fric = 0.25f;
 
-    Quaternion targetRot;
+    private Quaternion targetRot;
+    private float fricMod = 0.0f;
 
     // State control parameters
-    float walk = 0.0f;
-    float sprint = 0.0f;
-    float fdir = 0.0f;
-    float dir = 0.0f;
-    bool holdSprint = false;
+    private float walk = 0.0f;
+    private float sprint = 0.0f;
+    private float fdir = 0.0f;
+    private float dir = 0.0f;
+    private bool holdSprint = false;
+    private bool isSkidding = false;
 
     // State Hash IDs
     private int idleState;
     private int walkState;
     private int fallState;
     private int sprintState;
+    private int skidState;
 
     private int prevState = -1;
 
@@ -41,10 +44,13 @@ public class OliviaDirector : CharDirector {
         walkState = Animator.StringToHash("Base Layer.Walk");
         fallState = Animator.StringToHash("Base Layer.Falling");
         sprintState = Animator.StringToHash("Base Layer.SprintState");
+        skidState = Animator.StringToHash("Base Layer.Skid");
     }
 
     // Update is called once per frame
     void Update () {
+        fricMod = 0.0f;
+
         // Get the inputs
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxis("Vertical");
@@ -81,6 +87,7 @@ public class OliviaDirector : CharDirector {
             animator.SetFloat("Sprint", sprint);
             animator.SetBool("OnGround", OnGround ());
             animator.SetBool("HoldSprint", holdSprint);
+            animator.SetBool("IsSkidding", isSkidding);
         }
     }
 
@@ -94,7 +101,7 @@ public class OliviaDirector : CharDirector {
 
         // Friction
         if (OnGround())
-            Accelerate(fric * -1f, 0f, 10f);
+            Accelerate((fric + fricMod) * -1f, 0f, 10f);
 
         // Get the state info and act according the current state
         AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
@@ -121,17 +128,16 @@ public class OliviaDirector : CharDirector {
         bool onground = OnGround();
 
         if (currentState == idleState) {
-            Idle(dt);
+            Idle (dt);
+        } else if (currentState == fallState) {
+            Fall ();
+        } else if (currentState == walkState && onground) {
+            Walk (dt);
+        } else if (currentState == sprintState && onground) {
+            Sprint (dt);
+        } else if (currentState == skidState && onground) {
+            Skid();
         }
-        else if (currentState == fallState) {
-            Fall();
-        }
-        else if (currentState == walkState && onground) {
-            Walk(dt);
-        } 
-        else if (currentState == sprintState && onground) {
-            Sprint(dt);
-        } 
             
         // If the player presses the jump key
         if (Input.GetButtonDown("Jump"))
@@ -203,6 +209,12 @@ public class OliviaDirector : CharDirector {
         TurnInPlace(1, dt);
     }
 
+    void Skid()
+    {
+        fricMod = 0.1f;
+        isSkidding = (GetForwardVelocity().magnitude > fric + fricMod);
+    }
+
 
     void JumpGround()
     {
@@ -226,6 +238,11 @@ public class OliviaDirector : CharDirector {
         fwd = fwd.normalized * newSpd;
         this.velocity.x = fwd.x;
         this.velocity.z = fwd.y;
+    }
+
+    Vector2 GetForwardVelocity()
+    {
+        return new Vector2(this.velocity.x, this.velocity.z);
     }
 
     void SnapVelocityDir(Vector3 newDir)
