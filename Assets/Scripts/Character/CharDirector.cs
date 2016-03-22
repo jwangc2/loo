@@ -9,6 +9,8 @@ public class CharDirector : MonoBehaviour {
 
     public Vector3 velocity = Vector3.zero;
 
+    protected Vector3 impactVelocity = Vector3.zero;
+
     // Use this for initialization
     protected virtual void Start () {
 
@@ -25,6 +27,8 @@ public class CharDirector : MonoBehaviour {
         // If on the ground, reset velocity
         if (OnGround() && this.velocity.y < 0f)
         {
+            impactVelocity = velocity;
+
             int layerMask = 1 << 8; // Mask for player
             layerMask = ~layerMask; // Everything but the player
 
