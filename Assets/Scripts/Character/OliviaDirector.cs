@@ -14,6 +14,7 @@ public class OliviaDirector : CharDirector {
     // State control parameters
     float walk = 0.0f;
     float sprint = 0.0f;
+    float fdir = 0.0f;
     float dir = 0.0f;
     bool holdSprint = false;
 
@@ -49,6 +50,7 @@ public class OliviaDirector : CharDirector {
         float v = Input.GetAxis("Vertical");
         bool sp = Input.GetButton("Sprint");
         holdSprint = sp;
+        fdir = Mathf.Sign(v);
 
         Debug.Log (v);
 
@@ -183,7 +185,7 @@ public class OliviaDirector : CharDirector {
     void Walk(float dt)
     {
         // Move forward at a speed of 1
-        Vector3 spd = cc.transform.forward * walkSpd;
+        Vector3 spd = cc.transform.forward * walkSpd * fdir;
         this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
         targetRot = animator.transform.rotation;
     }

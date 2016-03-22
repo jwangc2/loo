@@ -31,7 +31,7 @@ public class CharDirector : MonoBehaviour {
             if (Physics.Raycast(cc.transform.position, Vector3.down, 0.25f))
                 cc.Move(Vector3.down * 0.25f);
 
-            this.velocity.y = 0f;
+            this.velocity.y = -1f * cc.height * 0.5f;
         }
         else
         {
