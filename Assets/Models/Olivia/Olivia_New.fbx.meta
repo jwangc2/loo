@@ -1,0 +1,174 @@
+fileFormatVersion: 2
+guid: 5ed4781438372b340a1c47f56c5ff380
+timeCreated: 1458614954
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: anim_COG01
+    100002: anim_Head01
+    100004: anim_L_Clavicle01
+    100006: anim_L_Hand01
+    100008: anim_L_Leg01
+    100010: anim_L_Leg02
+    100012: anim_mid_Chest01
+    100014: anim_R_Clavicle01
+    100016: anim_R_Hand01
+    100018: anim_R_Leg01
+    100020: anim_Top_Chest01
+    100022: be_L_clavicle01
+    100024: be_L_Hand01
+    100026: be_L_Toe01
+    100028: be_R_clavicle01
+    100030: be_R_Hand01
+    100032: be_R_Toe01
+    100034: bn_hip01
+    100036: bn_L_ankle01
+    100038: bn_L_clavicle01
+    100040: bn_L_elbow01
+    100042: bn_L_foot01
+    100044: bn_L_Hand01
+    100046: bn_L_knee01
+    100048: bn_L_leg01
+    100050: bn_L_shoulder01
+    100052: bn_L_Toe01
+    100054: bn_L_wrist01
+    100056: bn_mid_chest01
+    100058: bn_neck01
+    100060: bn_R_ankle01
+    100062: bn_R_clavicle01
+    100064: bn_R_elbow01
+    100066: bn_R_foot01
+    100068: bn_R_Hand01
+    100070: bn_R_knee01
+    100072: bn_R_leg01
+    100074: bn_R_shoulder01
+    100076: bn_R_Toe01
+    100078: bn_R_wrist01
+    100080: bn_root01
+    100082: bn_top_chest01
+    100084: joint12
+    100086: m_Hair
+    100088: m_Necktie
+    100090: m_Olivia
+    100092: Olivia_Model
+    100094: //RootNode
+    400000: anim_COG01
+    400002: anim_Head01
+    400004: anim_L_Clavicle01
+    400006: anim_L_Hand01
+    400008: anim_L_Leg01
+    400010: anim_L_Leg02
+    400012: anim_mid_Chest01
+    400014: anim_R_Clavicle01
+    400016: anim_R_Hand01
+    400018: anim_R_Leg01
+    400020: anim_Top_Chest01
+    400022: be_L_clavicle01
+    400024: be_L_Hand01
+    400026: be_L_Toe01
+    400028: be_R_clavicle01
+    400030: be_R_Hand01
+    400032: be_R_Toe01
+    400034: bn_hip01
+    400036: bn_L_ankle01
+    400038: bn_L_clavicle01
+    400040: bn_L_elbow01
+    400042: bn_L_foot01
+    400044: bn_L_Hand01
+    400046: bn_L_knee01
+    400048: bn_L_leg01
+    400050: bn_L_shoulder01
+    400052: bn_L_Toe01
+    400054: bn_L_wrist01
+    400056: bn_mid_chest01
+    400058: bn_neck01
+    400060: bn_R_ankle01
+    400062: bn_R_clavicle01
+    400064: bn_R_elbow01
+    400066: bn_R_foot01
+    400068: bn_R_Hand01
+    400070: bn_R_knee01
+    400072: bn_R_leg01
+    400074: bn_R_shoulder01
+    400076: bn_R_Toe01
+    400078: bn_R_wrist01
+    400080: bn_root01
+    400082: bn_top_chest01
+    400084: joint12
+    400086: m_Hair
+    400088: m_Necktie
+    400090: m_Olivia
+    400092: Olivia_Model
+    400094: //RootNode
+    4300000: m_Olivia
+    4300002: m_Hair
+    4300004: m_Necktie
+    9500000: //RootNode
+    13700000: m_Hair
+    13700002: m_Necktie
+    13700004: m_Olivia
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
