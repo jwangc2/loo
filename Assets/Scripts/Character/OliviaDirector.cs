@@ -233,7 +233,10 @@ public class OliviaDirector : CharDirector {
 
     void Accelerate(float acc, float minSpd, float maxSpd)
     {
-        Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+        Vector2 fwd = GetForwardVelocity();
+        if (fwd == Vector2.zero) {
+            fwd = new Vector2(cc.transform.forward.x, cc.transform.forward.z);
+        }
         float newSpd = Mathf.Min(Mathf.Max(fwd.magnitude + acc, minSpd), maxSpd);
         fwd = fwd.normalized * newSpd;
         this.velocity.x = fwd.x;
