@@ -1,0 +1,269 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class OliviaDirector : CharDirector {
+
+    #region Public and Private Variables
+    public float walkSpd = 1f;
+    public float sprintMaxSpd = 6f;
+    public float sprintAccel = 1f;
+    public float fric = 0.25f;
+
+    Quaternion targetRot;
+
+    // State control parameters
+    float walk = 0.0f;
+    float sprint = 0.0f;
+    float dir = 0.0f;
+    float movingFwd = 0.0f;
+
+    // State Hash IDs
+    private int idleState;
+    private int walkState;
+    private int fallState;
+    private int sprintState;
+
+    private int prevState = -1;
+
+    #endregion
+
+
+    #region Unity Callbacks
+    // Use this for initialization
+    protected override void Start () {
+        base.Start ();
+
+        targetRot = animator.transform.rotation;
+
+        // Determine the ID's related to each state
+        idleState = Animator.StringToHash("Base Layer.Idle");
+        walkState = Animator.StringToHash("Base Layer.Walk");
+        fallState = Animator.StringToHash("Base Layer.Falling");
+        sprintState = Animator.StringToHash("Base Layer.SprintState");
+    }
+
+    // Update is called once per frame
+    void Update () {
+        // Get the inputs
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        bool sp = Input.GetButton("Sprint");
+
+        Debug.Log (v);
+
+        // Calculate some of the state variables
+        walk = v * v;
+        sprint = 0f;
+        if (sp)
+        {
+            sprint = v * v;
+        }
+
+        // Turning (interpolated for smoothness)
+        dir = dir + (h - dir) * 0.1f;
+
+
+        animator.transform.rotation = Quaternion.Lerp(animator.transform.rotation, targetRot, 7f * Time.deltaTime);
+        UpdateCharacterController();
+    }
+
+    protected override void FixedUpdate() {
+        base.FixedUpdate();
+
+        // Apply the state variables
+        if (animator)
+        {
+            animator.SetFloat("Walk", walk);
+            animator.SetFloat("Sprint", sprint);
+            animator.SetFloat("Turn", dir);
+            animator.SetBool("OnGround", OnGround ());
+            animator.SetFloat("MovingFwd", movingFwd);
+        }
+
+
+    }
+
+    #endregion
+
+
+    #region Inherited Methods
+
+    protected override void Move() {
+        base.Move();
+
+        // Friction
+        if (OnGround())
+            Accelerate(fric * -1f, 0f, 10f);
+
+        // Get the state info and act according the current state
+        AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (info.nameHash != idleState)
+        {
+            // Match the animator position with the cc position as soon as the cc moves
+            UpdateAnimator();
+        }
+    }
+
+    protected override void Step() {
+        base.Step();
+
+        float dt = Time.fixedDeltaTime;
+
+        // Make sure we are in the right orientation (mainly for the forward orientation)
+        UpdateCharacterController();
+
+        // Get the state info and act according the current state
+        AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+        int currentState = info.nameHash;
+
+        bool onground = OnGround();
+
+        if (currentState == idleState) {
+            Idle(dt);
+        }
+        else if (currentState == fallState) {
+            Fall();
+        }
+        else if (currentState == walkState && onground) {
+            Walk(dt);
+        } 
+        else if (currentState == sprintState && onground) {
+            Sprint(dt);
+        } 
+            
+        // If the player presses the jump key
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (onground) { // AKA a normal jump
+                JumpGround ();
+            }
+        }
+
+        prevState = currentState;
+    }
+
+    /*protected override bool OnGround() 
+    {
+        // Check each of the foot checkers with a gigantic OR gate
+        bool footOn = false;
+        foreach (ColliderCheck collCheck in footChecks)
+        {
+            if (collCheck.isMeeting)
+            {
+                footOn = true;
+                break;
+            }
+        }
+
+        return (base.OnGround() || footOn);
+    }*/
+
+    #endregion
+
+
+    #region State Functions
+
+    void Idle(float dt)
+    {
+        // If we're trying to turn while sprinting, jank it
+        TurnInPlace(1f, dt);
+
+        // Stay still
+        this.velocity.x = 0f;
+        this.velocity.z = 0f;
+    }
+
+    void Fall()
+    {
+        Vector3 look = animator.transform.forward;
+        look.y = 0f;
+
+        LookAt(animator.transform.position + look);
+    }
+
+    void Walk(float dt)
+    {
+        // Move forward at a speed of 1
+        Vector3 spd = cc.transform.forward * walkSpd;
+        this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+        targetRot = animator.transform.rotation;
+    }
+
+    void Sprint(float dt)
+    {
+        // If we're trying to turn while sprinting, jank it
+        TurnInPlace(2f, dt);
+
+        // Move forward at 1m/s^2 to a max speed of 6
+        SnapVelocityDir(cc.transform.forward);
+        Accelerate(sprintAccel, 0f, sprintMaxSpd);
+    }
+
+
+    void JumpGround()
+    {
+        // Nomrally jump with vert. speed of 7
+        this.velocity.y = 7f;
+
+        // Get off the ground and make sure it doesn't register as being on the ground (and setting y-velocity to 0)
+        cc.transform.position += Vector3.up * 0.5f;
+        cc.Move(Vector3.zero);
+    }
+
+    #endregion
+
+
+    #region Helper Functions
+
+    void Accelerate(float acc, float minSpd, float maxSpd)
+    {
+        Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+        float newSpd = Mathf.Min(Mathf.Max(fwd.magnitude + acc, minSpd), maxSpd);
+        fwd = fwd.normalized * newSpd;
+        this.velocity.x = fwd.x;
+        this.velocity.z = fwd.y;
+    }
+
+    void SnapVelocityDir(Vector3 newDir)
+    {
+        Vector3 dir = new Vector3(newDir.x, 0f, newDir.z);
+        Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+        Vector3 newFwd = dir.normalized;
+        this.velocity = newFwd * fwd.magnitude;
+    }
+
+    // Matches the animator position to the cc position
+    void UpdateAnimator()
+    {
+        animator.transform.position = cc.transform.position;
+    }
+
+    void UpdateCharacterController()
+    {
+        cc.transform.rotation = animator.transform.rotation;
+    }
+
+    void TurnInPlace(float degrees, float dt)
+    {
+        // If we're trying to turn while doing something, jank it
+        RotateAround(animator.transform.up, dir * degrees * dt);
+    }
+
+    void LookAt(Vector3 pos)
+    {
+        Quaternion save = animator.transform.rotation;
+        animator.transform.LookAt(pos);
+        targetRot = animator.transform.rotation;
+        animator.transform.rotation = save;
+    }
+
+    void RotateAround(Vector3 axis, float degrees)
+    {
+        animator.transform.RotateAround(axis, degrees);
+        targetRot = animator.transform.rotation;
+    }
+
+    #endregion
+
+}
