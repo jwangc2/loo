@@ -243,7 +243,7 @@ public class OliviaDirector : CharDirector {
         Vector3 fwdVel = (cc.transform.forward * rollSpd);
         velocity.x = fwdVel.x;
         velocity.z = fwdVel.z;
-        fricMod = -1f * fric;
+        fricMod = -0.9f * fric;
     }
 
     void Crouch()
