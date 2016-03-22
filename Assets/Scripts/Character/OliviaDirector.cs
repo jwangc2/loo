@@ -15,7 +15,7 @@ public class OliviaDirector : CharDirector {
     float walk = 0.0f;
     float sprint = 0.0f;
     float dir = 0.0f;
-    float movingFwd = 0.0f;
+    bool holdSprint = false;
 
     // State Hash IDs
     private int idleState;
@@ -48,6 +48,7 @@ public class OliviaDirector : CharDirector {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxis("Vertical");
         bool sp = Input.GetButton("Sprint");
+        holdSprint = sp;
 
         Debug.Log (v);
 
@@ -75,12 +76,9 @@ public class OliviaDirector : CharDirector {
         {
             animator.SetFloat("Walk", walk);
             animator.SetFloat("Sprint", sprint);
-            animator.SetFloat("Turn", dir);
             animator.SetBool("OnGround", OnGround ());
-            animator.SetFloat("MovingFwd", movingFwd);
+            animator.SetBool("HoldSprint", holdSprint);
         }
-
-
     }
 
     #endregion
@@ -193,10 +191,10 @@ public class OliviaDirector : CharDirector {
     void Sprint(float dt)
     {
         // If we're trying to turn while sprinting, jank it
-        TurnInPlace(2f, dt);
+        // TurnInPlace(2f, dt);
 
         // Move forward at 1m/s^2 to a max speed of 6
-        SnapVelocityDir(cc.transform.forward);
+        // SnapVelocityDir(cc.transform.forward);
         Accelerate(sprintAccel, 0f, sprintMaxSpd);
     }
 
@@ -227,7 +225,7 @@ public class OliviaDirector : CharDirector {
 
     void SnapVelocityDir(Vector3 newDir)
     {
-        Vector3 dir = new Vector3(newDir.x, 0f, newDir.z);
+        Vector3 dir = new Vector3(newDir.x, newDir.y, newDir.z);
         Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
         Vector3 newFwd = dir.normalized;
         this.velocity = newFwd * fwd.magnitude;
