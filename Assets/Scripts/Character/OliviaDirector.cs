@@ -68,6 +68,7 @@ public class OliviaDirector : CharDirector {
 
         animator.transform.rotation = Quaternion.Lerp(animator.transform.rotation, targetRot, 7f * Time.deltaTime);
         UpdateCharacterController();
+        SnapForwardDir(cc.transform.forward);
     }
 
     protected override void FixedUpdate() {
@@ -188,6 +189,7 @@ public class OliviaDirector : CharDirector {
         Vector3 spd = cc.transform.forward * walkSpd * fdir;
         this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
         targetRot = animator.transform.rotation;
+        TurnInPlace(2, dt);
     }
 
     void Sprint(float dt)
@@ -198,6 +200,7 @@ public class OliviaDirector : CharDirector {
         // Move forward at 1m/s^2 to a max speed of 6
         // SnapVelocityDir(cc.transform.forward);
         Accelerate(sprintAccel, 0f, sprintMaxSpd);
+        TurnInPlace(1, dt);
     }
 
 
@@ -229,8 +232,16 @@ public class OliviaDirector : CharDirector {
     {
         Vector3 dir = new Vector3(newDir.x, newDir.y, newDir.z);
         Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
-        Vector3 newFwd = dir.normalized;
-        this.velocity = newFwd * fwd.magnitude;
+        this.velocity = dir.normalized * fwd.magnitude;
+    }
+
+    void SnapForwardDir(Vector3 newDir)
+    {
+        Vector2 dir = new Vector2(newDir.x, newDir.z);
+        Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+        Vector3 newFwd = dir.normalized * fwd.magnitude;
+        this.velocity.x = newFwd.x;
+        this.velocity.z = newFwd.y;
     }
 
     // Matches the animator position to the cc position
