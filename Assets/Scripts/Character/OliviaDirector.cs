@@ -8,6 +8,7 @@ public class OliviaDirector : CharDirector {
     public float sprintMaxSpd = 6f;
     public float sprintAccel = 1f;
     public float fric = 0.25f;
+    public float rollMin = 5f;
 
     private Quaternion targetRot;
     private float fricMod = 0.0f;
@@ -19,6 +20,7 @@ public class OliviaDirector : CharDirector {
     private float dir = 0.0f;
     private bool holdSprint = false;
     private bool isSkidding = false;
+    private bool canRoll = false;
 
     // State Hash IDs
     private int idleState;
@@ -26,6 +28,7 @@ public class OliviaDirector : CharDirector {
     private int fallState;
     private int sprintState;
     private int skidState;
+    private int crouchState;
 
     private int prevState = -1;
 
@@ -45,6 +48,7 @@ public class OliviaDirector : CharDirector {
         fallState = Animator.StringToHash("Base Layer.Falling");
         sprintState = Animator.StringToHash("Base Layer.SprintState");
         skidState = Animator.StringToHash("Base Layer.Skid");
+        crouchState = Animator.StringToHash("Base Layer.Crouch");
     }
 
     // Update is called once per frame
@@ -57,8 +61,6 @@ public class OliviaDirector : CharDirector {
         bool sp = Input.GetButton("Sprint");
         holdSprint = sp;
         fdir = Mathf.Sign(v);
-
-        Debug.Log (v);
 
         // Calculate some of the state variables
         walk = v * v;
@@ -78,16 +80,17 @@ public class OliviaDirector : CharDirector {
     }
 
     protected override void FixedUpdate() {
-        base.FixedUpdate();
+        base.FixedUpdate ();
 
         // Apply the state variables
         if (animator)
         {
             animator.SetFloat("Walk", walk);
             animator.SetFloat("Sprint", sprint);
-            animator.SetBool("OnGround", OnGround ());
+            animator.SetBool("OnGround", OnGround());
             animator.SetBool("HoldSprint", holdSprint);
             animator.SetBool("IsSkidding", isSkidding);
+            animator.SetBool("CanRoll", canRoll);
         }
     }
 
@@ -136,13 +139,15 @@ public class OliviaDirector : CharDirector {
         } else if (currentState == sprintState && onground) {
             Sprint (dt);
         } else if (currentState == skidState && onground) {
-            Skid();
+            Skid ();
+        } else if (currentState == crouchState && onground) {
+            Crouch ();
         }
             
         // If the player presses the jump key
         if (Input.GetButtonDown("Jump"))
         {
-            if (onground) { // AKA a normal jump
+            if (onground && currentState != crouchState) { // AKA a normal jump
                 JumpGround ();
             }
         }
@@ -183,6 +188,9 @@ public class OliviaDirector : CharDirector {
 
     void Fall()
     {
+        Debug.Log ("Falling");
+        canRoll = ((this.velocity.y * -1f) >= rollMin);
+
         Vector3 look = animator.transform.forward;
         look.y = 0f;
 
@@ -213,6 +221,13 @@ public class OliviaDirector : CharDirector {
     {
         fricMod = 0.1f;
         isSkidding = (GetForwardVelocity().magnitude > fric + fricMod);
+    }
+
+    void Crouch()
+    {
+        // Can't move forward
+        this.velocity.x = 0f;
+        this.velocity.z = 0f;
     }
 
 
