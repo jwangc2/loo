@@ -8,6 +8,7 @@ public class OliviaDirector : CharDirector {
     public float sprintMaxSpd = 6f;
     public float sprintAccel = 1f;
     public float fric = 0.25f;
+    public float skidFricMod = 0.15f;
     public float rollMin = 5f;
     public float rollSpd = 6f;
 
@@ -95,6 +96,7 @@ public class OliviaDirector : CharDirector {
             animator.SetBool("HoldSprint", holdSprint);
             animator.SetBool("IsSkidding", isSkidding);
             animator.SetBool("CanRoll", canRoll);
+            animator.SetFloat("FwdSpd", GetForwardVelocity().magnitude);
         }
     }
 
@@ -162,7 +164,12 @@ public class OliviaDirector : CharDirector {
         // If the player presses the jump key
         if (Input.GetButtonDown("Jump"))
         {
-            if (onground && currentState != crouchState) { // AKA a normal jump
+            bool isValidState =
+                (currentState != crouchState
+                && currentState != rollState
+                && currentState != skidState);
+            
+            if (onground && isValidState) { // AKA a normal jump
                 JumpGround ();
             }
         }
@@ -234,8 +241,8 @@ public class OliviaDirector : CharDirector {
 
     void Skid()
     {
-        fricMod = 0.1f;
-        isSkidding = (GetForwardVelocity().magnitude > fric + fricMod);
+        fricMod = skidFricMod;
+        isSkidding = (GetForwardVelocity ().magnitude > fric + fricMod);            
     }
 
     void Roll(float dt)
