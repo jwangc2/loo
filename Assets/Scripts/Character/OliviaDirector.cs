@@ -11,6 +11,7 @@ public class OliviaDirector : CharDirector {
     public float skidFricMod = 0.15f;
     public float rollMin = 5f;
     public float rollSpd = 6f;
+    public bool canReceiveInput = true;
 
     private Quaternion targetRot;
     private float fricMod = 0.0f;
@@ -60,10 +61,17 @@ public class OliviaDirector : CharDirector {
 
     // Update is called once per frame
     void Update () {
-        // Get the inputs
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        bool sp = Input.GetButton("Sprint");
+        float h = 0;
+        float v = 0;
+        bool sp = false;
+
+        if (canReceiveInput) {
+            // Get the inputs
+            h = Input.GetAxisRaw ("Horizontal");
+            v = Input.GetAxis ("Vertical");
+            sp = Input.GetButton ("Sprint");
+        }
+
         holdSprint = sp;
         fdir = Mathf.Sign(v);
 
