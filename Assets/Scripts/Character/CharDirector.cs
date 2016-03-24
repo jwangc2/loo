@@ -6,6 +6,7 @@ public class CharDirector : MonoBehaviour {
     public Animator animator;
     public CharacterController cc;
     public float grav = 9.8f;
+    public float maxSlopeHeight = 3;
 
     public Vector3 velocity = Vector3.zero;
 
@@ -35,7 +36,7 @@ public class CharDirector : MonoBehaviour {
             if (Physics.Raycast(cc.transform.position, Vector3.down, 0.25f))
                 cc.Move(Vector3.down * 0.25f);
 
-            this.velocity.y = -1f * cc.height * 0.5f;
+            this.velocity.y = -1f * maxSlopeHeight;
         }
         else
         {

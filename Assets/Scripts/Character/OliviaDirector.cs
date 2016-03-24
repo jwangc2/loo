@@ -240,9 +240,12 @@ public class OliviaDirector : CharDirector {
 
     void Roll(float dt)
     {
-        Vector3 fwdVel = (cc.transform.forward * rollSpd);
-        velocity.x = fwdVel.x;
-        velocity.z = fwdVel.z;
+        if (prevState != rollState)
+        {
+            Vector3 fwdVel = (cc.transform.forward * rollSpd);
+            velocity.x = fwdVel.x;
+            velocity.z = fwdVel.z;
+        }
         fricMod = -0.9f * fric;
     }
 
