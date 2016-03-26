@@ -5,7 +5,9 @@ public class OliviaDirector : CharDirector {
 
     #region Public and Private Variables
     public float walkSpd = 1f;
+    public float walkTurnSpd = 2f;
     public float sprintMaxSpd = 6f;
+    public float sprintTurnSpd = 2f;
     public float sprintAccel = 1f;
     public float fric = 0.25f;
     public float skidFricMod = 0.15f;
@@ -105,6 +107,7 @@ public class OliviaDirector : CharDirector {
             animator.SetBool("IsSkidding", isSkidding);
             animator.SetBool("CanRoll", canRoll);
             animator.SetFloat("FwdSpd", GetForwardVelocity().magnitude);
+            animator.SetFloat("VSpd", velocity.y);
         }
     }
 
@@ -233,7 +236,7 @@ public class OliviaDirector : CharDirector {
         Vector3 spd = cc.transform.forward * walkSpd * fdir;
         this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
         targetRot = animator.transform.rotation;
-        TurnInPlace(2, dt);
+        TurnInPlace(walkTurnSpd, dt);
     }
 
     void Sprint(float dt)
@@ -244,7 +247,7 @@ public class OliviaDirector : CharDirector {
         // Move forward at 1m/s^2 to a max speed of 6
         // SnapVelocityDir(cc.transform.forward);
         Accelerate(sprintAccel, 0f, sprintMaxSpd);
-        TurnInPlace(1, dt);
+        TurnInPlace(sprintTurnSpd, dt);
     }
 
     void Skid()
