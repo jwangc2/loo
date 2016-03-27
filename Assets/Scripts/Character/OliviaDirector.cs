@@ -77,7 +77,7 @@ public class OliviaDirector : CharDirector {
         }
 
         holdSprint = sp;
-        fdir = Mathf.Sign(v);
+        fdir = MathTK.Sign(v);
 
         // Calculate some of the state variables
         walk = v * v;
@@ -104,7 +104,7 @@ public class OliviaDirector : CharDirector {
         {
             float absFwdSpd = GetForwardVelocity().magnitude;
             float fwdNess = Vector3.Dot(new Vector2(cc.transform.forward.x, cc.transform.forward.y), GetForwardVelocity ());
-            fwdNess = Mathf.Sign (fwdNess);
+            fwdNess = MathTK.Sign (fwdNess);
             animator.SetFloat("Walk", walk);
             animator.SetFloat("Sprint", sprint);
             animator.SetBool("OnGround", OnGround());
@@ -240,7 +240,8 @@ public class OliviaDirector : CharDirector {
     {
         targetRot = animator.transform.rotation;
         TurnInPlace(walkTurnSpd, dt);
-        // Move forward at a speed of 1
+
+        // Move forward at a constant speed
         Vector3 spd = cc.transform.forward * walkSpd * fdir;
         this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
     }

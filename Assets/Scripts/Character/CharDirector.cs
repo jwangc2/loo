@@ -36,7 +36,7 @@ public class CharDirector : MonoBehaviour {
             if (Physics.Raycast(cc.transform.position, Vector3.down, 0.25f))
                 cc.Move(Vector3.down * 0.25f);
 
-            this.velocity.y = -1f * maxSlopeHeight;
+            this.velocity.y = 0f;
         }
         else
         {
@@ -51,7 +51,8 @@ public class CharDirector : MonoBehaviour {
         // Debug.Log("Speed: " + this.velocity.magnitude);
         // Debug.Log("Y-Speed: " + this.velocity.y);
 
-        cc.Move(velocity * dt);
+        Vector3 extraVel = (OnGround()) ? Vector3.down * maxSlopeHeight : Vector3.zero;
+        cc.Move(velocity * dt + extraVel);
         UpdateAnimator();
     }
 
