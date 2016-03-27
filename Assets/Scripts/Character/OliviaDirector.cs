@@ -14,6 +14,8 @@ public class OliviaDirector : CharDirector {
     public float rollMin = 5f;
     public float rollSpd = 6f;
     public bool canReceiveInput = true;
+    public Transform handXform;
+    public Transform saberXform;
 
     private Quaternion targetRot;
     private float fricMod = 0.0f;
@@ -91,7 +93,7 @@ public class OliviaDirector : CharDirector {
 
         animator.transform.rotation = Quaternion.Lerp(animator.transform.rotation, targetRot, 7f * Time.deltaTime);
         UpdateCharacterController();
-        SnapForwardDir(cc.transform.forward);
+        // SnapForwardDir(cc.transform.forward);
     }
 
     protected override void FixedUpdate() {
@@ -100,13 +102,17 @@ public class OliviaDirector : CharDirector {
         // Apply the state variables
         if (animator)
         {
+            float absFwdSpd = GetForwardVelocity().magnitude;
+            float fwdNess = Vector3.Dot(new Vector2(cc.transform.forward.x, cc.transform.forward.y), GetForwardVelocity ());
+            fwdNess = Mathf.Sign (fwdNess);
             animator.SetFloat("Walk", walk);
             animator.SetFloat("Sprint", sprint);
             animator.SetBool("OnGround", OnGround());
             animator.SetBool("HoldSprint", holdSprint);
             animator.SetBool("IsSkidding", isSkidding);
             animator.SetBool("CanRoll", canRoll);
-            animator.SetFloat("FwdSpd", GetForwardVelocity().magnitude);
+            animator.SetFloat("FwdSpd", absFwdSpd * fwdNess);
+            animator.SetFloat("AbsFwdSpd", absFwdSpd);
             animator.SetFloat("VSpd", velocity.y);
         }
     }
@@ -121,7 +127,7 @@ public class OliviaDirector : CharDirector {
 
         // Friction
         if (OnGround ()) {
-            float netFriction = (fric + fricMod);
+            float netFriction = Mathf.Max (fric + fricMod, 0);
             Accelerate (netFriction * -1f, 0f, 1000f);
         }
         fricMod = 0.0f;
@@ -232,11 +238,11 @@ public class OliviaDirector : CharDirector {
 
     void Walk(float dt)
     {
+        targetRot = animator.transform.rotation;
+        TurnInPlace(walkTurnSpd, dt);
         // Move forward at a speed of 1
         Vector3 spd = cc.transform.forward * walkSpd * fdir;
         this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
-        targetRot = animator.transform.rotation;
-        TurnInPlace(walkTurnSpd, dt);
     }
 
     void Sprint(float dt)
@@ -294,7 +300,7 @@ public class OliviaDirector : CharDirector {
     {
         Vector2 fwd = GetForwardVelocity();
         if (fwd == Vector2.zero) {
-            fwd = new Vector2(cc.transform.forward.x, cc.transform.forward.z);
+            // fwd = new Vector2(cc.transform.forward.x, cc.transform.forward.z);
         }
         float newSpd = Mathf.Min(Mathf.Max(fwd.magnitude + acc, minSpd), maxSpd);
         fwd = fwd.normalized * newSpd;
@@ -338,6 +344,9 @@ public class OliviaDirector : CharDirector {
     {
         // If we're trying to turn while doing something, jank it
         RotateAround(animator.transform.up, dir * degrees * dt);
+        if (degrees != 0) {
+            SnapForwardDir(animator.transform.forward);
+        }
     }
 
     void LookAt(Vector3 pos)
