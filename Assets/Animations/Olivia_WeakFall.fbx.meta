@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b52c895904025cd4aaf6f516d337a9e7
-timeCreated: 1459014943
+guid: bc8caf285a043c0479868fa84e4cce7b
+timeCreated: 1459100148
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -39,7 +39,6 @@ ModelImporter:
     100062: bn_top_chest01
     100064: joint12
     100066: //RootNode
-    100068: anim_Root
     400000: anim_COG01
     400002: be_L_clavicle01
     400004: be_L_Hand01
@@ -74,8 +73,7 @@ ModelImporter:
     400062: bn_top_chest01
     400064: joint12
     400066: //RootNode
-    400068: anim_Root
-    7400000: Jog_Updated
+    7400000: WeakFall
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -88,11 +86,7 @@ ModelImporter:
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
-      improve retargeting quality.\n\t'be_L_clavicle01' is inbetween humanoid transforms
-      and has rotation animation that will be discarded.\n\t'bn_hip01' is inbetween
-      humanoid transforms and has rotation animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
@@ -103,10 +97,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Jog_Updated
+      name: WeakFall
       takeName: Take 001
       firstFrame: 1
-      lastFrame: 27
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

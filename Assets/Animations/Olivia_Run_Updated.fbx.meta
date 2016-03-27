@@ -39,6 +39,7 @@ ModelImporter:
     100062: bn_top_chest01
     100064: joint12
     100066: //RootNode
+    100068: anim_Root
     400000: anim_COG01
     400002: be_L_clavicle01
     400004: be_L_Hand01
@@ -73,6 +74,7 @@ ModelImporter:
     400062: bn_top_chest01
     400064: joint12
     400066: //RootNode
+    400068: anim_Root
     7400000: Run_Updated
     9500000: //RootNode
   materials:
@@ -86,7 +88,11 @@ ModelImporter:
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
+      improve retargeting quality.\n\t'be_L_clavicle01' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\t'bn_hip01' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
