@@ -88,7 +88,9 @@ public class OliviaDirector : CharDirector {
         }
 
         // Turning (interpolated for smoothness)
-        dir = dir + (h - dir) * 0.1f;
+        Debug.Log(dir);
+        dir = Mathf.Lerp(dir, h, 0.1f);
+        // dir = dir + (h - dir) * 0.1f;
 
 
         animator.transform.rotation = Quaternion.Lerp(animator.transform.rotation, targetRot, 7f * Time.deltaTime);
@@ -114,6 +116,7 @@ public class OliviaDirector : CharDirector {
             animator.SetFloat("FwdSpd", absFwdSpd * fwdNess);
             animator.SetFloat("AbsFwdSpd", absFwdSpd);
             animator.SetFloat("VSpd", velocity.y);
+            animator.SetFloat("Turn", dir);
         }
     }
 
