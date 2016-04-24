@@ -88,7 +88,7 @@ public class OliviaDirector : CharDirector {
         }
 
         // Turning (interpolated for smoothness)
-        Debug.Log(dir);
+        // Debug.Log(dir);
         dir = Mathf.Lerp(dir, h, 0.1f);
         // dir = dir + (h - dir) * 0.1f;
 

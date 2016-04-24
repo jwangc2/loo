@@ -14,7 +14,7 @@ public class MouseCam : MonoBehaviour {
     float y = 0f;
 
 	// Use this for initialization
-	void Start () {
+	protected virtual void Start () {
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = angles.x;
@@ -26,7 +26,7 @@ public class MouseCam : MonoBehaviour {
 	}
 	
 	// LateUpdate is called once per frame
-	void LateUpdate () {
+	protected virtual void LateUpdate () {
         if (target)
         {
             x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
@@ -42,7 +42,11 @@ public class MouseCam : MonoBehaviour {
         }
 	}
 
-    static float ClampAngle(float angle, float min, float max)
+    protected virtual bool ShouldMove() {
+        return true;
+    }
+
+    protected static float ClampAngle(float angle, float min, float max)
     {
         if (angle < -360)
             angle += 360;
